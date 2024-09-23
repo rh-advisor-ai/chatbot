@@ -11,14 +11,12 @@ st.title("💬 Chatbot")
 st.write(
     "This is a simple chatbot that uses OpenAI's"
 )
-# st.info(f"user name: {st.session_state.get('user_name')}")
-# st.info(f"user ID: {st.session_state.get('user_id')}")
+#  st.info(f"user name: {st.session_state.get('user_name')}")
+#  st.info(f"user ID: {st.session_state.get('user_id')}")
 
-# option = st.selectbox(
-#     "How would you like to be contacted?",
-#     ("Email", "Home phone", "Mobile phone"),
-# )
-# st.write("You selected:", option)
+
+if "phase_index" not in st.session_state:
+    st.session_state.phase_index = 1
 
 def start_thread_ai():
     if st.session_state.username and st.session_state.username != '':
@@ -35,12 +33,16 @@ def start_thread_ai():
 def exit_chat():
     st.session_state.messages = []
     st.session_state.user_id = None
+    st.session_state.phase_index = 1
     del st.session_state['user_name']
     del st.session_state['user_id']
-    # st.sidebar.empty()
-    # st.sidebar.status(expanded=False)
-    # del st.sidebar
-    # st.rerun()
+
+def get_target_api(index):
+    print()
+    if index == 1:
+        return "chat_advisor"
+    if index == 2:
+        return "chat_advisor"
 
 def run_chat():
     # Store and display the current prompt.
@@ -51,7 +53,8 @@ def run_chat():
         "userId" : st.session_state.user_id,
         "question" : st.session_state.prompt
     }
-    data = requests.post(f"{base_url}/chat_advisor", json=input_json).json()
+    api_endpoint = get_target_api(st.session_state.phase_index)
+    data = requests.post(f"{base_url}/{api_endpoint}", json=input_json).json()
 
     # Stream the response to the chat using `st.write_stream`, then store it in 
     # session state.
@@ -62,13 +65,19 @@ def run_chat():
 
 
 def phase_two():
-    print()
+    print("PHASE 2")
     st.session_state.messages = []
+    st.session_state.phase_index = 2
+    
+def phase_tree():
+    print("PHASE 3")
+    st.session_state.messages = []
+    st.session_state.phase_index = 3
 
 if "user_name" not in st.session_state or not st.session_state.user_name:
     username = st.text_input("Username", type="default", key="username", on_change=start_thread_ai)
 else:
-    st.text("Hello " + st.session_state.user_name)
+    st.info("Hello " + st.session_state.user_name)
 
 if "user_name" not in st.session_state or not st.session_state.user_name:
     st.info("Please add your Username to continue.", icon="🗝️")
@@ -100,4 +109,9 @@ else:
         st.button("Exit", key='clear_chat_button', on_click=exit_chat)
 
     with col2:
-        st.button("Next Step", key='next_chat_button', on_click=exit_chat)
+        if st.session_state.phase_index == 1:
+            print()
+            st.button("Next Step", key='next_chat_button', on_click=phase_two)
+        if st.session_state.phase_index == 2:
+            print()
+            st.button("Next Step2", key='next_chat_button2', on_click=phase_tree)
