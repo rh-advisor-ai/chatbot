@@ -1,25 +1,38 @@
 import streamlit as st
 from openai import OpenAI
+import numpy as np
+from random import randint
+import requests
+
+base_url = st.secrets.BASE_URL
 
 # Show title and description.
 st.title("💬 Chatbot")
 st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
+    "This is a simple chatbot that uses OpenAI's"
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
+# option = st.selectbox(
+#     "How would you like to be contacted?",
+#     ("Email", "Home phone", "Mobile phone"),
+# )
+# st.write("You selected:", option)
+
+if not st.session_state.username:
+    username = st.text_input("Username", type="default")
+    user_id = randint(1000, 10000)
+    st.session_state.username = username
+    st.session_state.user_id = user_id
+    input_json = {
+        "userId" : st.session_state.user_id
+    }
+    requests.post(f"{base_url}/start_thread", json=input_json).json()
 else:
+    st.text("Hello " + st.session_state.username)
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
-
+if not st.session_state.username:
+    st.info("Please add your Username to continue.", icon="🗝️")
+else:
     # Create a session state variable to store the chat messages. This ensures that the
     # messages persist across reruns.
     if "messages" not in st.session_state:
@@ -38,19 +51,16 @@ else:
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
-
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
+        input_json = {
+            "userId" : st.session_state.user_id,
+            "question" : prompt
+        }
+        data = requests.post(f"{base_url}/chat_advisor", json=input_json).json()
 
         # Stream the response to the chat using `st.write_stream`, then store it in 
         # session state.
         with st.chat_message("assistant"):
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+            st.markdown(data)
+        st.session_state.messages.append({"role": "assistant", "content": data['answer']})
+    
+    st.button("Next Step")
