@@ -23,7 +23,7 @@ if "username" not in st.session_state:
     user_id = randint(1000, 10000)
     # st.session_state.username = username
     st.session_state.user_id = user_id
-    st.experimental_rerun()
+    st.rerun()
     input_json = {
         "userId" : st.session_state.user_id
     }
