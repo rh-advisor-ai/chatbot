@@ -18,7 +18,7 @@ st.write(
 # )
 # st.write("You selected:", option)
 
-if not st.session_state.username:
+if "username" not in st.session_state:
     username = st.text_input("Username", type="default")
     user_id = randint(1000, 10000)
     st.session_state.username = username
