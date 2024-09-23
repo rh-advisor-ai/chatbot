@@ -19,10 +19,11 @@ st.write(
 # st.write("You selected:", option)
 
 if "username" not in st.session_state:
-    username = st.text_input("Username", type="default")
+    username = st.text_input("Username", type="default", key="username")
     user_id = randint(1000, 10000)
     st.session_state.username = username
     st.session_state.user_id = user_id
+    st.experimental_rerun()
     input_json = {
         "userId" : st.session_state.user_id
     }
