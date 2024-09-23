@@ -17,6 +17,8 @@ st.write(
 
 if "phase_index" not in st.session_state:
     st.session_state.phase_index = 1
+if "startups" not in st.session_state:
+    st.session_state.startups = []
 
 def start_thread_ai():
     if st.session_state.username and st.session_state.username != '':
@@ -34,6 +36,7 @@ def exit_chat():
     st.session_state.messages = []
     st.session_state.user_id = None
     st.session_state.phase_index = 1
+    st.session_state.startups = None
     del st.session_state['user_name']
     del st.session_state['user_id']
 
@@ -42,7 +45,9 @@ def get_target_api(index):
     if index == 1:
         return "chat_advisor"
     if index == 2:
-        return "chat_advisor"
+        return "chat_recap"
+    if index == 3:
+        return "chat_survey"
 
 def run_chat():
     # Store and display the current prompt.
@@ -51,7 +56,8 @@ def run_chat():
     #     st.markdown(st.session_state.prompt)
     input_json = {
         "userId" : st.session_state.user_id,
-        "question" : st.session_state.prompt
+        "question" : st.session_state.prompt,
+        "startups" : st.session_state.get('startups')
     }
     api_endpoint = get_target_api(st.session_state.phase_index)
     data = requests.post(f"{base_url}/{api_endpoint}", json=input_json).json()
@@ -66,6 +72,11 @@ def run_chat():
 
 def phase_two():
     print("PHASE 2")
+    input_json = {
+        "userId" : st.session_state.user_id
+    }
+    data = requests.post(f"{base_url}/end_thread", json=input_json).json()
+    st.session_state.startups = list(map(int, data['startups'].split(',')))
     st.session_state.messages = []
     st.session_state.phase_index = 2
     
