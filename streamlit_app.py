@@ -6,15 +6,6 @@ import requests
 
 base_url = st.secrets.BASE_URL
 
-# Show title and description.
-st.title("💬 Chatbot")
-st.write(
-    "This is a simple chatbot that uses OpenAI's"
-)
-#  st.info(f"user name: {st.session_state.get('user_name')}")
-#  st.info(f"user ID: {st.session_state.get('user_id')}")
-
-
 if "phase_index" not in st.session_state:
     st.session_state.phase_index = 1
 if "startups" not in st.session_state:
@@ -48,6 +39,15 @@ def get_target_api(index):
         return "chat_recap"
     if index == 3:
         return "chat_survey"
+
+def get_target_stage(index):
+    print()
+    if index == 1:
+        return "Initial Advisor Assistant"
+    if index == 2:
+        return "Selected Startup Recap"
+    if index == 3:
+        return "Survey Assistant"
 
 def run_chat():
     # Store and display the current prompt.
@@ -84,15 +84,28 @@ def phase_tree():
     print("PHASE 3")
     st.session_state.messages = []
     st.session_state.phase_index = 3
+    
+
+user_stage = get_target_stage(st.session_state.phase_index)
+# Show title and description.
+st.title("💬 Chatbot - " + user_stage)
+st.write(
+    "This is a simple chatbot that uses Retail Hub technology"
+)
+#  st.info(f"user name: {st.session_state.get('user_name')}")
+#  st.info(f"user ID: {st.session_state.get('user_id')}")
+
+# if "user_name" not in st.session_state or not st.session_state.user_name:
+#     username = st.text_input("Username", type="default", key="username", on_change=start_thread_ai)
+# else:
+#     st.info("Hello " + st.session_state.user_name)
 
 if "user_name" not in st.session_state or not st.session_state.user_name:
     username = st.text_input("Username", type="default", key="username", on_change=start_thread_ai)
+    st.info("Please add your Username to continue.", icon="🗝️")
 else:
     st.info("Hello " + st.session_state.user_name)
 
-if "user_name" not in st.session_state or not st.session_state.user_name:
-    st.info("Please add your Username to continue.", icon="🗝️")
-else:
     # Create a session state variable to store the chat messages. This ensures that the
     # messages persist across reruns.
     if "messages" not in st.session_state:
@@ -122,7 +135,7 @@ else:
     with col2:
         if st.session_state.phase_index == 1:
             print()
-            st.button("Next Step", key='next_chat_button', on_click=phase_two)
+            st.button("Next Stage", key='next_chat_button', on_click=phase_two)
         if st.session_state.phase_index == 2:
             print()
-            st.button("Next Step2", key='next_chat_button2', on_click=phase_tree)
+            st.button("Go To Survey", key='next_chat_button2', on_click=phase_tree)
