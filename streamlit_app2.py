@@ -8,7 +8,7 @@ def normalize_text(text):
     """Normalizza il testo rimuovendo caratteri non standard e standardizzando il font."""
     if text:
         # normalized_text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
-        return normalized_text
+        return text  # normalized_text
     return "N/A"
 
 # Definisci le credenziali valide
