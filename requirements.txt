@@ -1,2 +1,6 @@
 streamlit
 openai
+psycopg2
+pandas
+unicodedata
+plotly.express
