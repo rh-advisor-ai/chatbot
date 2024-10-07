@@ -1,13 +1,13 @@
 import streamlit as st
 import psycopg2
 import pandas as pd
-import unicodedata
+# import unicodedata
 import plotly.express as px
 
 def normalize_text(text):
     """Normalizza il testo rimuovendo caratteri non standard e standardizzando il font."""
     if text:
-        normalized_text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+        # normalized_text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
         return normalized_text
     return "N/A"
 
