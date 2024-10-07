@@ -184,10 +184,10 @@ def main():
             labels = [
                 "Key", "Company Type", "Company Stage", "Business Model", "Name",
                 "Founding Year", "Founders", "Country", "City", "Address", "Phone Number",
-                "Email Domain", "Emails", "Website", "LinkedIn URL", "Logo URL", "Video Demo", "Target Markets",
+                "Email Domain", "Emails", "Website", "LinkedIn URL", "Logo URL", "Video Demo",
                 "Number of Employees", "Growth Rate", "Total Funding", "Revenue", "Created Time", "Updated Time",
 				"Main Investors", "Notable Achievements/Awards", "Integration time", "Technologies Used", "Clients", 
-				"Business Description", "Product Description", "Tags", "News1", "News2", "News3", "Regions"
+				"Business Description", "Product Description", "Tags", "News1", "News2", "News3", "Target Markets", "Categories"
             ]
             for label, value in zip(labels, details):
                 if label == "Product Description":
